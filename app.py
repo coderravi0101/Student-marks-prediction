@@ -3,6 +3,7 @@ import pandas as pd
 import joblib
 import numpy as np
 from datetime import datetime
+import plotly.graph_objects as go
 
 # Page Configuration
 st.set_page_config(
@@ -182,16 +183,25 @@ with tab1:
             col1, col2 = st.columns(2)
             
             with col1:
-                # Bar chart for probabilities
-                prob_data = pd.DataFrame({
-                    'Outcome': ['FAIL', 'PASS'],
-                    'Probability (%)': [prob_fail, prob_pass]
-                })
-                
-                st.bar_chart(
-                    prob_data.set_index('Outcome')['Probability (%)'],
-                    color=['#eb3349', '#11998e']
+                # Create Plotly bar chart with proper colors
+                fig = go.Figure(data=[
+                    go.Bar(
+                        x=['FAIL', 'PASS'],
+                        y=[prob_fail, prob_pass],
+                        marker=dict(color=['#eb3349', '#11998e']),
+                        text=[f'{prob_fail:.2f}%', f'{prob_pass:.2f}%'],
+                        textposition='auto',
+                    )
+                ])
+                fig.update_layout(
+                    title='Outcome Probability Distribution',
+                    xaxis_title='Outcome',
+                    yaxis_title='Probability (%)',
+                    showlegend=False,
+                    height=400,
+                    hovermode='x unified'
                 )
+                st.plotly_chart(fig, use_container_width=True)
             
             with col2:
                 st.markdown("### 📋 Detailed Breakdown")
